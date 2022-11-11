@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
@@ -25,12 +26,14 @@ namespace ValidModelAPP.Controllers
             context.SaveChanges();
         }
 
+        [Authorize(Roles ="Admin")]
         public IActionResult Index()
         {
+            ViewBag.UserName = User.Identity.Name;
             return View();
         }
 
-
+        [Authorize]
         public async Task<IActionResult> List(string? name, Guid? publishingId, int page=1,
             SortState sortState=SortState.NameAsc) 
         {

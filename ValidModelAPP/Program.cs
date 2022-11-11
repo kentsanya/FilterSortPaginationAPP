@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using ValidModelAPP.Models.Authentiction;
 
 namespace ValidModelAPP
 {
@@ -11,7 +15,9 @@ namespace ValidModelAPP
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(option =>  option.LoginPath="/Auth/login");
+            builder.Services.AddAuthorization();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,7 +33,9 @@ namespace ValidModelAPP
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+          
 
             app.MapControllerRoute(
                 name: "default",
